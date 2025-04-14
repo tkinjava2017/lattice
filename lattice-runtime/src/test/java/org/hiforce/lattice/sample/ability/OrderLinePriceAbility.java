@@ -5,6 +5,7 @@ import org.hiforce.lattice.runtime.ability.BaseLatticeAbility;
 import org.hiforce.lattice.runtime.ability.reduce.Reducers;
 import org.hiforce.lattice.sample.ability.ext.BlankOrderLinePriceExt;
 import org.hiforce.lattice.sample.ability.ext.OrderLinePriceExt;
+import org.hiforce.lattice.sample.callback.OrderLinePriceCallback;
 import org.hiforce.lattice.sample.model.OrderLine;
 
 import java.util.Objects;
@@ -22,9 +23,9 @@ public class OrderLinePriceAbility extends BaseLatticeAbility<OrderLinePriceExt>
     }
 
     public Long getCustomUnitPrice(OrderLine orderLine) {
-        return Optional.ofNullable(reduceExecute(p -> p.getCustomUnitPrice(orderLine),
-                        Reducers.firstOf(Objects::nonNull)))
-                .orElse(orderLine.getUnitPrice());
+        OrderLinePriceCallback callback = new OrderLinePriceCallback(orderLine);
+        return Optional.ofNullable(reduceExecute(callback, Reducers.firstOf(Objects::nonNull)))
+                .orElseThrow(()->new RuntimeException("无法匹配到扩展点"));
     }
 
     @Override

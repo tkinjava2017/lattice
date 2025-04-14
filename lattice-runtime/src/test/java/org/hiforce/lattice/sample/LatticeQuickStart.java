@@ -16,6 +16,7 @@ public class LatticeQuickStart {
 
         doBusinessA();
         doBusinessB();
+        doBusinessC();
 
     }
 
@@ -37,6 +38,17 @@ public class LatticeQuickStart {
         OrderLinePriceAbility ability = new OrderLinePriceAbility(orderLine);
         Long unitPrice = ability.getCustomUnitPrice(orderLine);
         String result = "[Business B] unit price: " + unitPrice;
+        System.out.println(result);
+        return result;
+    }
+
+    public static String doBusinessC() {
+        OrderLine orderLine = new OrderLine();
+        orderLine.setUnitPrice(1000L);
+        orderLine.setBizCode("business.c");
+        OrderLinePriceAbility ability = new OrderLinePriceAbility(orderLine);
+        Long unitPrice = ability.getCustomUnitPrice(orderLine);
+        String result = "[Business C] unit price: " + unitPrice;
         System.out.println(result);
         return result;
     }
