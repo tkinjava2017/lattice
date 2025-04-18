@@ -1,5 +1,6 @@
 package org.hiforce.lattice.runtime.ability;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -184,6 +185,7 @@ public abstract class BaseLatticeAbility<BusinessExt extends IBusinessExt>
         BusinessExt businessExt = this.getDefaultRealization();
         List<Object> extParams = Lists.newArrayList();
         Enhancer enhancer = new Enhancer();
+        log.info("superclass:{}", businessExt.getClass());
         enhancer.setSuperclass(businessExt.getClass());
         enhancer.setCallback((MethodInterceptor) (o, method, params, methodProxy) -> {
             this.getContext().setExtMethod(method);
@@ -192,6 +194,7 @@ public abstract class BaseLatticeAbility<BusinessExt extends IBusinessExt>
                     extParams.add(p);
                 }
             }
+            log.info("extParams:{}", JSON.toJSONString(extParams));
             this.getContext().setInvokeParams(extParams);
             ExtensionAnnotation annotation =
                     LatticeAnnotationUtils.getExtensionAnnotation(method);

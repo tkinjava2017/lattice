@@ -156,7 +156,7 @@ public class BaseLatticeAbilityDelegate {
             List<RunnerItemEntry<R>> runners) {
         List<RunnerItemEntry<R>> effectiveRunners = Lists.newArrayList();
         for (RunnerItemEntry<R> runner : runners) {
-            if (runner.getTemplate().getType().isVertical()) {
+            if (runner.getTemplate().getType().isVertical()) {//为什么垂直就是有效的？
                 effectiveRunners.add(runner);
                 continue;
             }
@@ -239,7 +239,8 @@ public class BaseLatticeAbilityDelegate {
         }
 
         List<RunnerItemEntry<R>> extensionRunners = new ArrayList<>();
-        for (ExtPriority config : businessConfig.getExtPriorityByCode(extension.getCode(), isHorizontal)) {
+        List<ExtPriority> extPriorities = businessConfig.getExtPriorityByCode(extension.getCode(), isHorizontal);
+        for (ExtPriority config : extPriorities) {
             if (null == config)
                 continue;
             BizSessionContext bizSessionContext =
