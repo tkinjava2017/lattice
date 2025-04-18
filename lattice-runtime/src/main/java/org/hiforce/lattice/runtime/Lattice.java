@@ -109,13 +109,16 @@ public class Lattice {
 
     public void initLatticeClassLoader() {
         latticeClassLoader = new LatticeClassLoader(Lattice.class.getClassLoader());
-        List<CustomClassLoaderSpi> customClassLoaders =
+        List<CustomClassLoaderSpi> customClassLoaderSpis =
                 LatticeRuntimeSpiFactory.getInstance().getCustomClassLoaders();
-        latticeClassLoader.getCustomLoaders().addAll(
-                customClassLoaders.stream()
-                        .map(CustomClassLoaderSpi::getCustomClassLoader)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList()));
+
+        log.info("customClassLoaderSpis:{}", customClassLoaderSpis);
+        List<ClassLoader> classLoaders = customClassLoaderSpis.stream()
+                                                      .map(CustomClassLoaderSpi::getCustomClassLoader)
+                                                      .filter(Objects::nonNull)
+                                                      .collect(Collectors.toList());
+        log.info("classLoaders:{}", classLoaders);
+        latticeClassLoader.getCustomLoaders().addAll(classLoaders);
         Thread.currentThread().setContextClassLoader(latticeClassLoader);
     }
 
@@ -171,8 +174,9 @@ public class Lattice {
     }
 
     private void injectIndirectDependencyExtensions(){
-        BusinessConfigCache.getInstance().getBusinessConfigs().forEach(p -> autoBuildUseCaseExtPriorityConfig(p, buildUseCaseExtPriorityConfigMap()));
-        BusinessConfigCache.getInstance().getBusinessConfigs().sort(Comparator.comparingInt(BusinessConfig::getPriority));
+        List<BusinessConfig> configs = BusinessConfigCache.getInstance().getBusinessConfigs();
+        configs.forEach(p -> autoBuildUseCaseExtPriorityConfig(p, buildUseCaseExtPriorityConfigMap()));
+        configs.sort(Comparator.comparingInt(BusinessConfig::getPriority));
     }
 
     private void autoBuildUseCaseExtPriorityConfig(BusinessConfig businessConfig, Map<String, ExtPriorityConfig> priorityMap) {
@@ -387,7 +391,9 @@ public class Lattice {
                 Enumeration<URL> enumeration = classLoader.getResources("META-INF/services/" + spiClassName);
                 while (enumeration.hasMoreElements()) {
                     URL url = enumeration.nextElement();
-                    classNames.addAll(loadSpiFileContent(url));
+                    List<String> classes = loadSpiFileContent(url);
+                    log.info("spi:{} -> {}", spiClassName, classes);
+                    classNames.addAll(classes);
                 }
             }
         } catch (IOException e) {

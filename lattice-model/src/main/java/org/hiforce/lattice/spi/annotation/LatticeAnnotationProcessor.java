@@ -5,6 +5,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.hiforce.lattice.utils.ServicesFileUtils;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -31,6 +32,7 @@ import static com.google.auto.common.MoreElements.getAnnotationMirror;
  * @since 2022/9/15
  */
 @SuppressWarnings("all")
+@Slf4j
 public abstract class LatticeAnnotationProcessor extends AbstractProcessor {
 
     public abstract Class<?> getServiceInterfaceClass();
@@ -60,6 +62,7 @@ public abstract class LatticeAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {
+            log.info("annotations:{} -> {}", this.getClass().getSimpleName(), annotations);
             return processImpl(annotations, roundEnv);
         } catch (Exception e) {
             // We don't allow exceptions create any kind to propagate to the compiler
