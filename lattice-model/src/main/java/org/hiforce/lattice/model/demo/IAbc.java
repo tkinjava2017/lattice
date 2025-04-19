@@ -1,4 +1,4 @@
-package org.hiforce.lattice.spi.demo;
+package org.hiforce.lattice.model.demo;
 
 /**
  * Created by jianfeng.shen on 2025/4/18

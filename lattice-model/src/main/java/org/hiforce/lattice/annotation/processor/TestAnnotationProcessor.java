@@ -2,8 +2,8 @@ package org.hiforce.lattice.annotation.processor;
 
 import com.google.auto.service.AutoService;
 import org.hiforce.lattice.spi.annotation.LatticeAnnotationProcessor;
-import org.hiforce.lattice.spi.demo.Abc;
-import org.hiforce.lattice.spi.demo.IAbc;
+import org.hiforce.lattice.model.demo.Abc;
+import org.hiforce.lattice.model.demo.IAbc;
 
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.SupportedOptions;

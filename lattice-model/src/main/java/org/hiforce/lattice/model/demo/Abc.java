@@ -1,4 +1,4 @@
-package org.hiforce.lattice.spi.demo;
+package org.hiforce.lattice.model.demo;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
