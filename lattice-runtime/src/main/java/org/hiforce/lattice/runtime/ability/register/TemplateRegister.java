@@ -193,6 +193,7 @@ public class TemplateRegister {
                     spec.setScenario(annotation.getScenario());
                     spec.setBusinessExtClass(annotation.getBusinessExtClass());
                     try {
+						//扩展点实例化
                         spec.setBusinessExt(annotation.getBusinessExtClass().newInstance());
                     } catch (Exception e) {
                         throw new LatticeRuntimeException("LATTICE-CORE-RT-0005", clz.getName());

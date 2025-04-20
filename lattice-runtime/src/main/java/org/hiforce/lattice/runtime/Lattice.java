@@ -112,6 +112,7 @@ public class Lattice {
         List<CustomClassLoaderSpi> customClassLoaderSpis =
                 LatticeRuntimeSpiFactory.getInstance().getCustomClassLoaders();
 
+		//允许业务自己实现ClassLoader
         log.info("customClassLoaderSpis:{}", customClassLoaderSpis);
         List<ClassLoader> classLoaders = customClassLoaderSpis.stream()
                                                       .map(CustomClassLoaderSpi::getCustomClassLoader)
@@ -119,6 +120,9 @@ public class Lattice {
                                                       .collect(Collectors.toList());
         log.info("classLoaders:{}", classLoaders);
         latticeClassLoader.getCustomLoaders().addAll(classLoaders);
+		log.info("Lattice.class.getClassLoader():{}", Lattice.class.getClassLoader());
+		log.info("Thread.currentThread().classLoader():{}", Thread.currentThread().getContextClassLoader());
+		Thread.currentThread().getContextClassLoader().getClass().getName();
         Thread.currentThread().setContextClassLoader(latticeClassLoader);
     }
 
@@ -414,14 +418,14 @@ public class Lattice {
     }
 
     @SuppressWarnings("rawtypes")
-    public static Set<Class> getServiceProviderClasses(String spiClassName, ClassLoader classLoader) {
-        ClassLoader originLoader = Lattice.getInstance().getLatticeClassLoader();
-        List<String> classNames = getServiceProviderValues(spiClassName, originLoader);
-        return classNames.stream().filter(StringUtils::isNotEmpty)
-                .map(p -> loadClass(p, classLoader))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
+	public static Set<Class> getServiceProviderClasses(String spiClassName, ClassLoader classLoader) {
+		ClassLoader originLoader = Lattice.getInstance().getLatticeClassLoader();
+		List<String> classNames = getServiceProviderValues(spiClassName, originLoader);
+		return classNames.stream().filter(StringUtils::isNotEmpty)
+				.map(p -> loadClass(p, classLoader))
+				.filter(Objects::nonNull)
+				.collect(Collectors.toSet());
+	}
 
     @SuppressWarnings("all")
     public static Set<Class> getServiceProviderClasses(String spiClassName) {
@@ -448,12 +452,14 @@ public class Lattice {
     @SuppressWarnings("rawtypes")
     private void registerRealizations() {
         Set<Class> classSet = getServiceProviderClasses(IBusinessExt.class.getName());
+		log.info("发现实现：{}", classSet);
         TemplateRegister.getInstance().registerRealizations(classSet);
     }
 
     @SuppressWarnings("rawtypes")
     private void registerAbilities() {
         Set<Class> abilityClasses = getServiceProviderClasses(IAbility.class.getName());
+		log.info("发现能力：{}", abilityClasses);
         registeredAbilities.addAll(AbilityRegister.getInstance()
                 .register(new AbilityBuildRequest(null, mergeAbilityInstancePackage(abilityClasses))));
     }
@@ -461,6 +467,7 @@ public class Lattice {
     @SuppressWarnings("rawtypes")
     private void registerBusinesses() {
         Set<Class> classSet = getServiceProviderClasses(IBusiness.class.getName());
+		log.info("发现业务：{}", classSet);
         TemplateRegister.getInstance().registerBusinesses(classSet);
     }
 
