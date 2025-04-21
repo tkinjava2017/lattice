@@ -1,5 +1,6 @@
 package org.hiforce.lattice.runtime;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -166,6 +167,7 @@ public class Lattice {
         List<BusinessConfig> configs = LatticeRuntimeSpiFactory.getInstance().getBusinessConfigLoads().stream()
                 .flatMap(p -> p.loadBusinessConfigs(bizCodes).stream())
                 .collect(Collectors.toList());
+        log.info("发现配置：{}", JSON.toJSONString(configs));
         BusinessConfigCache.getInstance().addBusinessConfigs(configs);
 
         if (isSimpleMode()) {
@@ -474,12 +476,14 @@ public class Lattice {
     @SuppressWarnings("rawtypes")
     private void registerProducts() {
         Set<Class> classSet = getServiceProviderClasses(IProduct.class.getName());
+        log.info("发现产品:{}", classSet);
         TemplateRegister.getInstance().registerProducts(classSet);
     }
 
     @SuppressWarnings("rawtypes")
     private void registerUseCases() {
         Set<Class> classSet = getServiceProviderClasses(IUseCase.class.getName());
+        log.info("发现用例:{}", classSet);
         TemplateRegister.getInstance().registerUseCases(classSet);
     }
 

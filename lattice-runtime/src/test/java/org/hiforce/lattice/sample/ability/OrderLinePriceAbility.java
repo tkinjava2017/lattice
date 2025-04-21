@@ -14,6 +14,7 @@ import java.util.Optional;
 /**
  * @author Rocky Yu
  * @since 2022/9/22
+ * 能力是对扩展的包装
  */
 @Ability(name = "OrderLine's Price Ability")
 public class OrderLinePriceAbility extends BaseLatticeAbility<OrderLinePriceExt> {
